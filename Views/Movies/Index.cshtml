@@ -1,0 +1,76 @@
+@model IReadOnlyList<MvcMovie.Models.Movie>
+
+@{
+    ViewData["Title"] = "My Favorite Movies";
+    var searchTitle = ViewData["SearchTitle"];
+    var fromYear = ViewData["FromYear"];
+    var genres = ViewData["Genres"] as Microsoft.AspNetCore.Mvc.Rendering.SelectList;
+}
+
+<h1>My Favorite Movies</h1>
+
+<p><a asp-action="Create" class="btn btn-primary">Create New</a></p>
+
+<form asp-action="Index" method="get" class="row g-3 align-items-end mb-4">
+    <div class="col-sm-4">
+        <label for="title" class="form-label">Title</label>
+        <input id="title" name="title" class="form-control" value="@searchTitle" />
+    </div>
+
+    <div class="col-sm-3">
+        <label for="genre" class="form-label">Genre</label>
+        <select id="genre" name="genre" asp-items="genres" class="form-select">
+            <option value="">All genres</option>
+        </select>
+    </div>
+
+    <div class="col-sm-2">
+        <label for="fromYear" class="form-label">From Year</label>
+        <input id="fromYear" name="fromYear" type="number" min="1" max="9999"
+               class="form-control" value="@fromYear" />
+    </div>
+
+    <div class="col-sm-3">
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
+    </div>
+</form>
+
+@if (Model.Count == 0)
+{
+    <p>No movies match your search.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Title</th>
+                    <th scope="col">Release Date</th>
+                    <th scope="col">Genre</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Rating</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var movie in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(_ => movie.Title)</td>
+                        <td>@Html.DisplayFor(_ => movie.ReleaseDate)</td>
+                        <td>@Html.DisplayFor(_ => movie.Genre)</td>
+                        <td>@Html.DisplayFor(_ => movie.Price)</td>
+                        <td>@Html.DisplayFor(_ => movie.Rating)</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@movie.Id">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@movie.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@movie.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
